@@ -126,7 +126,22 @@ static class TokAcceptor extends Acceptor implements DFA {
     int tokLen ;
     TokAcceptor (String tok) {this.tok = tok ; tokLen = tok.length() ;}
     
-    // add code here
+    public String lexClass() {return tok;};
+    public int numberOfStates() {return (tokLen + 1);};
+    
+    int next (int state, char c) {
+    	if(state == tokLen + 2) {
+    		return (tokLen + 2);
+    	}
+    	if(tok.charAt(state) == c){
+    		return state + 1;
+    	}
+    	else {return (tokLen + 2) ;}
+    }
+    
+    boolean accepting (int state) {return (state == tokLen);}
+    int dead () {return (tokLen + 2);}
+    
 }
 
     // add definitions of MH_acceptors here
