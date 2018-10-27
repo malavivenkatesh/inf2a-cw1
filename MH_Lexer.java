@@ -106,10 +106,18 @@ static class CommentAcceptor extends Acceptor implements DFA {
     	switch(state) {
     	case 0: if (c == '-') return 1; else return 6;
     	case 1: if (c == '-') return 2; else return 6;
-    //how to check if a char is empty and or null	case 2: if () return 5;
-    	
+    	case 2: if (c == '-') return 2; 
+    			else if (CharTypes.isSymbolic(c) || CharTypes.isNewline(c)) return 6;
+    			else return 3;
+    	case 3: if (CharTypes.isNewline(c)) return 6; else return 4;
+    	case 4: if (CharTypes.isNewline(c)) return 6;
+    			else return 4;
+    	default: return 6;
     	}
     }
+    
+    boolean accepting (int state) {return (state == 2 || state == 4);}
+    int dead () {return 6;}
 }
 
 static class TokAcceptor extends Acceptor implements DFA {
