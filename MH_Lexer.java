@@ -100,23 +100,23 @@ static class WhitespaceAcceptor extends Acceptor implements DFA {
 
 static class CommentAcceptor extends Acceptor implements DFA {
     public String lexClass() {return "" ;} ;
-    public int numberOfStates () {return 7;};
+    public int numberOfStates () {return 6;};
     
     int next (int state, char c) {
     	switch(state) {
-    	case 0: if (c == '-') return 1; else return 6;
-    	case 1: if (c == '-') return 2; else return 6;
+    	case 0: if (c == '-') return 1; else return 5;
+    	case 1: if (c == '-') return 2; else return 5;
     	case 2: if (c == '-') return 2; 
-    			else if (!CharTypes.isSymbolic(c) && !CharTypes.isNewline(c)) return 3;
-    			else return 6;
-    	case 3: if (!CharTypes.isNewline(c)) return 4; else return 6;
-    	case 4: if (!CharTypes.isNewline(c)) return 4; else return 6;
-    	default: return 6;
+    			else if (!(CharTypes.isSymbolic(c)) && !(CharTypes.isNewline(c))) return 3;
+    			else return 5;
+    	case 3: if (!CharTypes.isNewline(c)) return 4; else return 5;
+    	case 4: if (!CharTypes.isNewline(c)) return 4; else return 5;
+    	default: return 5;
     	}
     }
     
     boolean accepting (int state) {return (state == 2 || state == 4);}
-    int dead () {return 6;}
+    int dead () {return 5;}
 }
 
 static class TokAcceptor extends Acceptor implements DFA {
@@ -129,17 +129,22 @@ static class TokAcceptor extends Acceptor implements DFA {
     public int numberOfStates() {return (tokLen + 2);};
     
     int next (int state, char c) {
-    	if(state == tokLen + 2) {
-    		return (tokLen + 2);
+//    	if (state > (tokLen + 1) ) {
+//    		return (tokLen + 2);
+//    	}
+//    	else if (state == tokLen) {
+//    		return (tokLen + 2);
+//    	}
+    	if ((state < tokLen) && tok.charAt(state) == c) {
+    			return (state + 1);
     	}
-    	if(tok.charAt(state) == c){
-    		return state + 1;
+    	else {
+    		return (tokLen + 1);
     	}
-    	else {return (tokLen + 2) ;}
     }
     
     boolean accepting (int state) {return (state == tokLen);}
-    int dead () {return (tokLen + 2);}
+    int dead () {return (tokLen + 1);}
     
 }
 	
