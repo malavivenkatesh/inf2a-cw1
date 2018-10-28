@@ -16,7 +16,7 @@ static class VarAcceptor extends Acceptor implements DFA {
     int next(int state, char c) {
     	switch (state) {
     	case 0: if (CharTypes.isSmall(c)) return 1; else return 2;
-    	case 1: if (CharTypes.isDigit(c) || CharTypes.isLetter(c)) return 1;
+    	case 1: if (CharTypes.isDigit(c) || CharTypes.isLetter(c) || c == '\'') return 1;
     		default: return 2 ; //return garbage state as default
     	}
     }
@@ -35,7 +35,7 @@ static class NumAcceptor extends Acceptor implements DFA {
     			else if ((CharTypes.isDigit(c) && c == 0)) return 2;
     			else return 3;
     	case 1: if (CharTypes.isDigit(c)) return 1; else return 3;
-    	case 2: if (CharTypes.isDigit(c) || CharTypes.isLetter(c) || CharTypes.isNewline(c) || CharTypes.isSymbolic(c)) return 3;)
+    	case 2: if (CharTypes.isDigit(c) || CharTypes.isLetter(c) || CharTypes.isNewline(c) || CharTypes.isSymbolic(c)) return 3;
     	default: return 3;
     	}
     }
@@ -107,11 +107,10 @@ static class CommentAcceptor extends Acceptor implements DFA {
     	case 0: if (c == '-') return 1; else return 6;
     	case 1: if (c == '-') return 2; else return 6;
     	case 2: if (c == '-') return 2; 
-    			else if (CharTypes.isSymbolic(c) || CharTypes.isNewline(c)) return 6;
-    			else return 3;
-    	case 3: if (CharTypes.isNewline(c)) return 6; else return 4;
-    	case 4: if (CharTypes.isNewline(c)) return 6;
-    			else return 4;
+    			else if (!CharTypes.isSymbolic(c) && !CharTypes.isNewline(c)) return 3;
+    			else return 6;
+    	case 3: if (!CharTypes.isNewline(c)) return 4; else return 6;
+    	case 4: if (!CharTypes.isNewline(c)) return 4; else return 6;
     	default: return 6;
     	}
     }
@@ -127,7 +126,7 @@ static class TokAcceptor extends Acceptor implements DFA {
     TokAcceptor (String tok) {this.tok = tok ; tokLen = tok.length() ;}
     
     public String lexClass() {return tok;};
-    public int numberOfStates() {return (tokLen + 1);};
+    public int numberOfStates() {return (tokLen + 2);};
     
     int next (int state, char c) {
     	if(state == tokLen + 2) {
@@ -143,10 +142,25 @@ static class TokAcceptor extends Acceptor implements DFA {
     int dead () {return (tokLen + 2);}
     
 }
-
-    // add definitions of MH_acceptors here
-
-    MH_Lexer (Reader reader) {
+	
+	static DFA ifAcc = new TokAcceptor("if");
+	static DFA thenAcc = new TokAcceptor("then");
+	static DFA elseAcc = new TokAcceptor("else");
+	static DFA intAcc = new TokAcceptor("Integer");
+	static DFA boolAcc = new TokAcceptor("Bool");
+	static DFA lbAcc = new TokAcceptor("(");
+	static DFA rbAcc = new TokAcceptor(")");
+	static DFA scAcc = new TokAcceptor(";");
+	static DFA varAcc = new VarAcceptor();
+	static DFA numAcc = new NumAcceptor();
+	static DFA booleanAcc = new BooleanAcceptor();
+	static DFA symAcc = new SymAcceptor();
+	static DFA wsAcc = new WhitespaceAcceptor();
+	static DFA comAcc = new CommentAcceptor();
+	
+	static DFA[] MH_acceptors = new DFA[] {ifAcc, thenAcc, elseAcc, intAcc, boolAcc, lbAcc, rbAcc, scAcc, comAcc, varAcc, numAcc, booleanAcc, symAcc, wsAcc}; 
+	
+	MH_Lexer (Reader reader) {
 	super(reader,MH_acceptors) ;
     }
 
