@@ -108,15 +108,14 @@ static class CommentAcceptor extends Acceptor implements DFA {
     	case 1: if (c == '-') return 2; else return 5;
     	case 2: if (c == '-') return 2; 
     			else if (!(CharTypes.isSymbolic(c)) && !(CharTypes.isNewline(c))) return 3;
-    			else return 5;
-    	case 3: if (!CharTypes.isNewline(c)) return 4; else return 5;
-    	case 4: if (!CharTypes.isNewline(c)) return 4; else return 5;
-    	default: return 5;
+    			else return 4;
+    	case 3: if (!CharTypes.isNewline(c)) return 3; else return 4;
+    	default: return 4;
     	}
     }
     
-    boolean accepting (int state) {return (state == 2 || state == 4);}
-    int dead () {return 5;}
+    boolean accepting (int state) {return (state == 2 || state == 3);}
+    int dead () {return 4;}
 }
 
 static class TokAcceptor extends Acceptor implements DFA {
@@ -129,12 +128,6 @@ static class TokAcceptor extends Acceptor implements DFA {
     public int numberOfStates() {return (tokLen + 2);};
     
     int next (int state, char c) {
-//    	if (state > (tokLen + 1) ) {
-//    		return (tokLen + 2);
-//    	}
-//    	else if (state == tokLen) {
-//    		return (tokLen + 2);
-//    	}
     	if ((state < tokLen) && tok.charAt(state) == c) {
     			return (state + 1);
     	}
