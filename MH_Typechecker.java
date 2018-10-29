@@ -22,7 +22,7 @@ class MH_Typechecker {
 
     static MH_TYPE computeType (MH_EXP exp, TYPE_ENV env) 
 	throws TypeError, UnknownVariable {
-
+		
         // add code here
 
     }
