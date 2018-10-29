@@ -41,12 +41,121 @@ class MH_Parser extends GenParser implements PARSER {
     // may add auxiliary methods here if desired
 
     String[] tableEntry (String nonterm, String tokClass) {
-        // add main code here
+        if (nonterm.equals("#Prog")) {
+        	if (tokClass == null) return epsilon;
+        	else if (tokClass.equals("VAR")) return Decl_Prog;
+        	else return null;
+        }
+        else if (nonterm.equals("#Decl")) {
+        	if (tokClass.equals("VAR")) return TypeDecl_TermDecl;
+        	else return null;
+        }
+        else if (nonterm.equals("#TypeDecl")) {
+        	if (tokClass.equals("VAR")) return VAR_has_Type;
+        	else return null;
+        }
+        else if (nonterm.equals("#Type")) {
+        	if (tokClass.equals("Integer")) return Type0_TypeRest;
+        	else if (tokClass.equals("Bool")) return Type0_TypeRest;
+        	else if (tokClass.equals("(")) return Type0_TypeRest;
+        	else return null;
+        }
+        else if (nonterm.equals("#TypeRest")) {
+        	if (tokClass.equals(")")) return epsilon;
+        	else if (tokClass.equals(";")) return epsilon;
+        	else if (tokClass.equals("->")) return arrow_Type;
+        	else return null;
+        }
+        else if (nonterm.equals("#Type0")) {
+        	if (tokClass.equals("Integer")) return Integer;
+        	else if (tokClass.equals("Bool")) return Bool;
+        	else if (tokClass.equals("(")) return lbr_Type_rbr;
+        	else return  null;
+        }
+        else if (nonterm.equals("#TermDecl")) {
+        	if (tokClass.equals("VAR")) return VAR_Args_eq_Exp;
+        	else return null;
+        }
+        else if (nonterm.equals("#Args")) {
+        	if (tokClass.equals("VAR")) return VAR_Args;
+        	else if (tokClass.equals("=")) return epsilon;
+        	else return null;
+        }
+        else if (nonterm.equals("#Exp")) {
+        	if (tokClass.equals("VAR")) return Exp0;
+        	else if (tokClass.equals("NUM")) return Exp0;
+        	else if (tokClass.equals("BOOLEAN")) return Exp0;
+        	else if (tokClass.equals("(")) return Exp0;
+        	else if (tokClass.equals("if")) return if_then_else;
+        	else return null;
+        }        	
+        else if (nonterm.equals("#Exp0")){
+        	if (tokClass.equals("VAR")) return Exp1_Rest0;
+        	else if (tokClass.equals("NUM")) return Exp1_Rest0;
+        	else if (tokClass.equals("BOOLEAN")) return Exp1_Rest0;
+        	else if (tokClass.equals("(")) return Exp1_Rest0;
+        	else return null;
+        }
+        else if (nonterm.equals("#Rest0")){
+        	if (tokClass.equals("==")) return eqeq_Exp1;
+        	else if (tokClass.equals("<=")) return lteq_Exp1;
+        	else if (tokClass.equals("then")) return epsilon;
+        	else if (tokClass.equals("else")) return epsilon;
+        	else if (tokClass.equals(")")) return epsilon;
+        	else if (tokClass.equals(";")) return epsilon;
+        	else return null;
+        }
+        else if (nonterm.equals("#Exp1")){
+        	if (tokClass.equals("VAR")) return Exp2_Rest1;
+        	else if (tokClass.equals("NUM")) return Exp2_Rest1;
+        	else if (tokClass.equals("BOOLEAN")) return Exp2_Rest1;
+        	else if (tokClass.equals("(")) return Exp2_Rest1;
+        	else return null;
+        }
+        else if (nonterm.equals("#Rest1")){
+        	if (tokClass.equals("+")) return plus_Exp2_Rest1;
+        	else if (tokClass.equals("-")) return minus_Exp2_Rest1;
+        	else if (tokClass.equals("==")) return epsilon;
+        	else if (tokClass.equals("<=")) return epsilon;
+        	else if (tokClass.equals("then")) return epsilon;
+        	else if (tokClass.equals("else")) return epsilon;
+        	else if (tokClass.equals(")")) return epsilon;
+        	else if (tokClass.equals(";")) return epsilon;
+        	else return null;
+        }
+        else if (nonterm.equals("#Exp2")){
+        	if (tokClass.equals("VAR")) return Exp3_Rest2;
+        	else if (tokClass.equals("NUM")) return Exp3_Rest2;
+        	else if (tokClass.equals("BOOLEAN")) return Exp3_Rest2;
+        	else if (tokClass.equals("(")) return Exp3_Rest2;
+        	else return null;
+        }
+        else if (nonterm.equals("#Rest2")){
+        	if (tokClass.equals("(")) return Exp3_Rest2;
+        	else if (tokClass.equals("VAR")) return Exp3_Rest2;
+        	else if (tokClass.equals("NUM")) return Exp3_Rest2;
+        	else if (tokClass.equals("BOOLEAN")) return Exp3_Rest2;
+        	else if (tokClass.equals("+")) return epsilon;
+        	else if (tokClass.equals("-")) return epsilon;
+        	else if (tokClass.equals("==")) return epsilon;
+        	else if (tokClass.equals("<=")) return epsilon;
+        	else if (tokClass.equals("then")) return epsilon;
+        	else if (tokClass.equals("else")) return epsilon;
+        	else if (tokClass.equals(")")) return epsilon;
+        	else if (tokClass.equals(";")) return epsilon;
+        	else return null;
+        }
+        else if (nonterm.equals("#Exp3")){
+        	if (tokClass.equals("VAR")) return VAR;
+        	else if (tokClass.equals("NUM")) return NUM;
+        	else if (tokClass.equals("BOOLEAN")) return BOOLEAN;
+        	else if (tokClass.equals("(")) return lbr_Exp_rbr;
+        	else return null;
+        }
+        else return null;
     }
 }
 
-
-// For testing
 
 class MH_ParserDemo {
 
