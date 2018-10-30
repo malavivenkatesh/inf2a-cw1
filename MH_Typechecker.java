@@ -43,6 +43,10 @@ class MH_Typechecker {
         	MH_TYPE leftTypeExp = leftType.right();
         	MH_TYPE rightType = computeType(exp.second(), env);
         	
+        	if (!leftType.isFun()) {
+        		throw new TypeError ("Function is not applied correctly to arguments.");
+        	}
+        	
         	if( !(leftTypeArg).equals(rightType) ) {
         		throw new TypeError ("Argument type mismatch. Expected argument: " + 
         	leftTypeArg.toString() + " Recieved argument: " + rightType);
@@ -56,7 +60,7 @@ class MH_Typechecker {
         	MH_TYPE rightType = computeType(exp.second(), env);
         	String infix = exp.infixOp();
         	
-        	if ( !((leftType).equals(IntegerType)) && !(rightType.equals(IntegerType)) ) {
+        	if ( !((leftType).equals(IntegerType)) || !(rightType.equals(IntegerType)) ) {
         		throw new TypeError ("Invalid infix arguments. Types " + leftType.toString() + " and " + 
         	rightType.toString() + " not valid for " + infix.toString() + " operation.");
         	}
