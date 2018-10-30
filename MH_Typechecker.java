@@ -28,7 +28,7 @@ class MH_Typechecker {
         if (exp == null) {
         	throw new TypeError ("Input is null");
         }
-        else if (exp.isBOOLEAN()) {
+        if (exp.isBOOLEAN()) {
         	returnType = BoolType;
         }
         else if (exp.isNUM()) {
@@ -45,7 +45,7 @@ class MH_Typechecker {
         	
         	if( !(leftTypeArg).equals(rightType) ) {
         		throw new TypeError ("Argument type mismatch. Expected argument: " + 
-        	leftTypeArg.toString() + "and recieved argument is: " + rightType);
+        	leftTypeArg.toString() + " Recieved argument: " + rightType);
         	}
         	else {
         		returnType = leftTypeExp;
@@ -56,9 +56,9 @@ class MH_Typechecker {
         	MH_TYPE rightType = computeType(exp.second(), env);
         	String infix = exp.infixOp();
         	
-        	if ( !((leftType).equals(IntegerType)) || !(rightType.equals(IntegerType)) ) {
-        		throw new TypeError ("Invalid infix arguments. " + leftType.toString() + " and " + 
-        	rightType.toString() + " not valid.");
+        	if ( !((leftType).equals(IntegerType)) && !(rightType.equals(IntegerType)) ) {
+        		throw new TypeError ("Invalid infix arguments. Types " + leftType.toString() + " and " + 
+        	rightType.toString() + " not valid for " + infix.toString() + " operation.");
         	}
         	else {
         		if((infix.equals("==")) || (infix.equals("<="))) {
@@ -86,18 +86,19 @@ class MH_Typechecker {
         			returnType = secondType;
         		}
         		else {
-        			throw new TypeError ("Input has differing types for 'if-then-else' statement");
+        			throw new TypeError ("Input has differing return types for 'if-then-else' statement.");
         		}
         	}
         	
         	else {
-        		throw new TypeError ("Input has invalid type for 'if' statement condition: " + firstExp.toString());
+        		throw new TypeError ("'if' statement must have condition of boolean type. "
+        				+ "Recieved type: " + firstType.toString() );
         	}
         }
         else {
-        	throw new TypeError ("Expression is not of a recognised type");
+        	throw new TypeError ("Expression is not of a valid form");
         }
-
+        
         return returnType;
     }
 
