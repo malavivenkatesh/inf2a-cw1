@@ -21,10 +21,84 @@ class MH_Typechecker {
     static MH_TYPE BoolType = MH_Type_Impl.BoolType ;
 
     static MH_TYPE computeType (MH_EXP exp, TYPE_ENV env) 
-	throws TypeError, UnknownVariable {
-		
-        // add code here
+    		throws TypeError, UnknownVariable {
+    	
+    	MH_TYPE returnType = null;
+    	
+        if (exp == null) {
+        	throw new TypeError ("Input is null");
+        }
+        else if (exp.isBOOLEAN()) {
+        	returnType = BoolType;
+        }
+        else if (exp.isNUM()) {
+        	returnType = IntegerType;
+        }
+        else if (exp.isVAR()) {
+        	returnType = env.typeOf(exp.value());
+        }
+        else if (exp.isAPP()) {
+        	MH_TYPE leftType = computeType(exp.first(), env);
+        	MH_TYPE leftTypeArg = leftType.left();
+        	MH_TYPE leftTypeExp = leftType.right();
+        	MH_TYPE rightType = computeType(exp.second(), env);
+        	
+        	if( !(leftTypeArg).equals(rightType) ) {
+        		throw new TypeError ("Argument type mismatch. Expected argument: " + 
+        	leftTypeArg.toString() + "and recieved argument is: " + rightType);
+        	}
+        	else {
+        		returnType = leftTypeExp;
+        	}
+        }
+        else if (exp.isINFIX()) {
+        	MH_TYPE leftType = computeType(exp.first(), env);
+        	MH_TYPE rightType = computeType(exp.second(), env);
+        	String infix = exp.infixOp();
+        	
+        	if ( !((leftType).equals(IntegerType)) || !(rightType.equals(IntegerType)) ) {
+        		throw new TypeError ("Invalid infix arguments. " + leftType.toString() + " and " + 
+        	rightType.toString() + " not valid.");
+        	}
+        	else {
+        		if((infix.equals("==")) || (infix.equals("<="))) {
+        			returnType = BoolType;
+        		}
+        		else if ((infix.equals("+")) || (infix.equals("-"))){
+        			returnType = IntegerType;
+        		}
+        		else {
+        			throw new TypeError ("Invalid infix operator: " + infix);
+        		}
+        	}
+        }
+        else if (exp.isIF()) {
+        	MH_EXP firstExp = exp.first();
+        	MH_EXP secondExp = exp.second();
+        	MH_EXP thirdExp = exp.third();
+        	
+        	MH_TYPE firstType = computeType(firstExp, env);
+        	MH_TYPE secondType = computeType(secondExp, env);
+        	MH_TYPE thirdType = computeType(thirdExp, env);
+        	
+        	if(firstType.equals(BoolType)) {
+        		if((secondType).equals(thirdType)) {
+        			returnType = secondType;
+        		}
+        		else {
+        			throw new TypeError ("Input has differing types for 'if-then-else' statement");
+        		}
+        	}
+        	
+        	else {
+        		throw new TypeError ("Input has invalid type for 'if' statement condition: " + firstExp.toString());
+        	}
+        }
+        else {
+        	throw new TypeError ("Expression is not of a recognised type");
+        }
 
+        return returnType;
     }
 
 
