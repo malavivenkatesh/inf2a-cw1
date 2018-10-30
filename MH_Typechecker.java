@@ -39,13 +39,13 @@ class MH_Typechecker {
         }
         else if (exp.isAPP()) {
         	MH_TYPE leftType = computeType(exp.first(), env);
-        	MH_TYPE leftTypeArg = leftType.left();
-        	MH_TYPE leftTypeExp = leftType.right();
         	MH_TYPE rightType = computeType(exp.second(), env);
         	
         	if (!leftType.isFun()) {
         		throw new TypeError ("Function is not applied correctly to arguments.");
         	}
+        	MH_TYPE leftTypeArg = leftType.left();
+        	MH_TYPE leftTypeExp = leftType.right();
         	
         	if( !(leftTypeArg).equals(rightType) ) {
         		throw new TypeError ("Argument type mismatch. Expected argument: " + 
